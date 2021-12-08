@@ -1,5 +1,6 @@
 import express from "express";
 import books from "./books-data.js";
+import { getBooks, findBookById} from "./models/books.js"
 
 const app = express();
 const port = 3000;
@@ -9,28 +10,19 @@ app.get("/", (req, res) => {
 });
 
 app.get("/books", (req, res) => {
+  const books = getBooks();
   res.json(books);
 });
 
-app.get("/book/:id", function (req, res) {
-  console.log(req.params);
-
-  //id from a string into a number
+app.get("/books/:id", function (req, res) {
   const id = Number(req.params.id);
-
-  //find the correct book with the id from the books array
-  const found = books.find(function (book) {
-    return book.id === id;
-  });
+  const found = findBookById(id);
   
-  console.log(found);
   if (found === undefined) {
-    res.json({
-      message: `Book does not exist with an id of ${req.params.id}.`,
-    });
+    res.json({message: `Book does not exist with an id of ${req.params.id}.`});
   }
   //give back the correct book.
-  res.json(found);
+  res.json({message: "I found a book for you" , book: found });
 });
 //we want to send back a single book.
 //get /books/ which book? return book 1 with id of one.
